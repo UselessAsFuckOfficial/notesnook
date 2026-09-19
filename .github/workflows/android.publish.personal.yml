@@ -134,9 +134,6 @@ jobs:
         run: |
           cd apps/mobile/android/app/build/outputs/apk/release/
           mv app-arm64-v8a-release-unsigned-signed.apk notesnook-arm64-v8a.apk
-          # mv app-armeabi-v7a-release-unsigned-signed.apk notesnook-armeabi-v7a.apk
-          # mv app-x86-release-unsigned-signed.apk notesnook-x86.apk
-          # mv app-x86_64-release-unsigned-signed.apk notesnook-x86_64.apk
 
       - name: Get app version
         id: package-version
@@ -144,34 +141,9 @@ jobs:
         with:
           path: apps/mobile
 
-      # - name: Publish to Playstore
-      #   id: deploy
-      #   uses: r0adkll/upload-google-play@v1.1.1
-      #   with:
-      #     serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-      #     packageName: com.streetwriters.notesnook
-      #     releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
-      #     track: production
-      #     status: completed
-      #     whatsNewDirectory: apps/mobile/android/releasenotes/
-
-      - name: Create release draft on Github
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          tag_name: ${{ steps.package-version.outputs.version}}-android
-          name: Notesnook Android v${{ steps.package-version.outputs.version}}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            apps/mobile/android/app/build/outputs/apk/release/notesnook-arm64-v8a.apk
-      #       apps/mobile/android/app/build/outputs/apk/release/notesnook-armeabi-v7a.apk
-      #       apps/mobile/android/app/build/outputs/apk/release/notesnook-x86.apk
-      #       apps/mobile/android/app/build/outputs/apk/release/notesnook-x86_64.apk
-
-      - name: Upload sourcemaps
+      - name: Upload release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: sourcemaps
+          name: release-artifacts
           path: |
-            apps/mobile/android/app/build/**/*.map
-            packages/editor-mobile/sourcemaps/*.map
+            apps/mobile/android/app/build/outputs/apk/release/notesnook-arm64-v8a.apk
