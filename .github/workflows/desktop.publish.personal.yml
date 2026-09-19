@@ -416,34 +416,19 @@ jobs:
       - name: Build
         run: node scripts/execute.mjs @notesnook/desktop:release
 
-      # - name: Upload (New)
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     draft: true
-      #     name: Notesnook Desktop
-      #     tag_name: v0
-      #     files: ./**/*.exe
-      #     prerelease: false
-      #     target_commitish: ${{ github.ref }}
-      #     working-directory: ./apps/desktop
+      - name: Publish
+        env:
+          NOTESNOOK_STAGING: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        run: |
+            yarn electron-builder --config=electron-builder.config.js --win --publish never
+        working-directory: ./apps/desktop
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           path: ./apps/desktop
           files: ./**/*.exe
-
-      # - name: Publish
-      #   env:
-      #     NOTESNOOK_STAGING: true
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      #     AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      #   run: |
-      #     if ($${{ inputs.publish-github }} -eq $true) {
-      #       yarn electron-builder --config=electron-builder.config.js --win --publish always
-      #     } else {
-      #       yarn electron-builder --config=electron-builder.config.js --win --publish never
-      #     }
-      #   working-directory: ./apps/desktop
