@@ -430,5 +430,4 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          path: ./apps/desktop
-          files: ./**/*.exe
+          path: ./apps/desktop/output/*x64*.exe
